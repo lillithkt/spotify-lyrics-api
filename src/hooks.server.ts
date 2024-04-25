@@ -36,5 +36,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 	}
 
 	const response = await resolve(event);
+	response.headers.append('Access-Control-Allow-Origin', '*');
+	response.headers.append('Access-Control-Allow-Methods', 'GET, OPTIONS');
+	response.headers.append('Access-Control-Allow-Headers', 'Content-Type');
 	return response;
 };
