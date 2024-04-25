@@ -1,0 +1,3 @@
+export const TrackIdRegex = /^[\d\w]{16,}$/;
+export const TrackUriRegex = /^spotify:track:([\d\w]{16,})$/;
+export const SongLinkRegex = /^https:\/\/open\.spotify\.com\/track\/([\d\w]{16,})/;

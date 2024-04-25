@@ -1,0 +1,10 @@
+name = "spotify-lyrics-api"
+account_id = "e02c193807b619799de3796836f6f7df"
+
+main = "./.cloudflare/worker.js"
+site.bucket = "./.cloudflare/public"
+
+build.command = "pnpm run build"
+
+compatibility_date = "2021-11-12"
+workers_dev = true
