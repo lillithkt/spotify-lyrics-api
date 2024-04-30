@@ -15,6 +15,6 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
 
 	const isrc = await getISRC(trackId, locals.accessToken || '');
 
-	url.pathname = `/lyrics/${isrc}`;
+	url.pathname = `/lyrics/${isrc}/${params.service || 'spotify'}`;
 	return redirect(301, url);
 };
