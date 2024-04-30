@@ -14,22 +14,20 @@ export const GET: RequestHandler = async ({ params, locals, url }) => {
 	}
 	const data = await res.json();
 	if (data?.tracks?.items?.length) {
+		const trackId = data.tracks.items[0].id;
 		if (!locals.accessToken) {
 			return noAuthToken();
-		}
-		if (!params.trackId) {
-			return trackNotFound('not given');
 		}
 
 		const raw = url.searchParams.has('rawLyrics');
 
 		try {
 			if (raw) {
-				return json(await getRawLyrics(params.trackId, locals.accessToken));
+				return json(await getRawLyrics(trackId, locals.accessToken));
 			}
-			return json(await getLyrics(params.trackId, locals.accessToken));
+			return json(await getLyrics(trackId, locals.accessToken));
 		} catch (e) {
-			return trackNotFound(params.trackId);
+			return trackNotFound(trackId);
 		}
 	}
 	return error(404, 'Track not found');

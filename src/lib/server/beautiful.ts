@@ -6,6 +6,10 @@ export async function getRawBeautifulLyrics(isrc: string): Promise<BeautifulLyri
 	return res.json();
 }
 
+function toMs(seconds: number): number {
+	return seconds * 1000;
+}
+
 export default async function getBeautifulLyrics(isrc: string): Promise<Lyrics> {
 	const raw = await getRawBeautifulLyrics(isrc);
 	switch (raw.Type) {
@@ -23,9 +27,9 @@ export default async function getBeautifulLyrics(isrc: string): Promise<Lyrics> 
 				syncType: 'LINE_SYNCED',
 				lines: raw.VocalGroups.map((line) => ({
 					opposite: line.OppositeAligned,
-					start: line.StartTime,
+					start: toMs(line.StartTime),
 					text: line.Text,
-					end: line.EndTime
+					end: toMs(line.EndTime)
 				}))
 			};
 		}
@@ -35,20 +39,20 @@ export default async function getBeautifulLyrics(isrc: string): Promise<Lyrics> 
 				syncType: 'SYLLABLE_SYNCED',
 				lines: raw.VocalGroups.map((line) => ({
 					opposite: line.OppositeAligned,
-					start: line.StartTime,
+					start: toMs(line.StartTime),
 					lead: line.Lead?.map((group) => ({
 						words: group.Text,
 						part: group.IsPartOfWord,
-						start: group.StartTime,
-						end: group.EndTime
+						start: toMs(group.StartTime),
+						end: toMs(group.EndTime)
 					})),
 					background: line.Background?.map((group) => ({
 						words: group.Text,
 						part: group.IsPartOfWord,
-						start: group.StartTime,
-						end: group.EndTime
+						start: toMs(group.StartTime),
+						end: toMs(group.EndTime)
 					})),
-					end: line.EndTime
+					end: toMs(line.EndTime)
 				}))
 			};
 		}
