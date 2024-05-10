@@ -6,17 +6,7 @@ export type LyricsUnsynced = {
 	}[];
 };
 
-export type LyricsLineSyncedNoEndTimes = {
-	syncType: 'LINE_SYNCED';
-	lines: {
-		opposite: boolean;
-		start: number;
-		text: string;
-	}[];
-};
-
-// Given when the syncType is 'LINE_SYNCED' and endTimeMs is given
-export type LyricsLineSyncedEndTimes = {
+export type LyricsLineSynced = {
 	syncType: 'LINE_SYNCED';
 	lines: {
 		opposite: boolean;
@@ -25,8 +15,6 @@ export type LyricsLineSyncedEndTimes = {
 		end: number;
 	}[];
 };
-
-export type LyricsLineSynced = LyricsLineSyncedNoEndTimes | LyricsLineSyncedEndTimes;
 
 export type SyllableLyricGroup = {
 	words: string;
@@ -42,6 +30,7 @@ export type LyricsSyllableSynced = {
 		start: number;
 		lead?: SyllableLyricGroup[];
 		background?: SyllableLyricGroup[];
+		all: (SyllableLyricGroup & { type: 'front' | 'back' })[];
 		end: number;
 	}[];
 };

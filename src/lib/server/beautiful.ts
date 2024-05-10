@@ -1,5 +1,5 @@
-import type { Lyrics } from '$lib/types/Lyrics';
-import type { BeautifulLyrics } from '$lib/types/Lyrics/Beautiful';
+import type { Lyrics, SyllableLyricGroup } from '$lib/types/Lyrics';
+import type { BeautifulLyrics, BeautifulLyricsSyllableGroup } from '$lib/types/Lyrics/Beautiful';
 
 export async function getRawBeautifulLyrics(isrc: string): Promise<BeautifulLyrics> {
 	const res = await fetch(`https://beautiful-lyrics.socalifornian.live/lyrics/${isrc}`);
@@ -8,6 +8,26 @@ export async function getRawBeautifulLyrics(isrc: string): Promise<BeautifulLyri
 
 function toMs(seconds: number): number {
 	return seconds * 1000;
+}
+
+function lyricsGroupToLine(group: BeautifulLyricsSyllableGroup): SyllableLyricGroup;
+function lyricsGroupToLine(
+	group: BeautifulLyricsSyllableGroup,
+	type: 'front' | 'back'
+): SyllableLyricGroup & { type: 'front' | 'back' };
+function lyricsGroupToLine(
+	group: BeautifulLyricsSyllableGroup,
+	type?: 'front' | 'back'
+): SyllableLyricGroup | (SyllableLyricGroup & { type: 'front' | 'back' }) {
+	return {
+		...{
+			words: group.Text,
+			part: group.IsPartOfWord,
+			start: toMs(group.StartTime),
+			end: toMs(group.EndTime)
+		},
+		...(type ? { type } : {})
+	};
 }
 
 export default async function getBeautifulLyrics(isrc: string): Promise<Lyrics> {
@@ -40,18 +60,12 @@ export default async function getBeautifulLyrics(isrc: string): Promise<Lyrics> 
 				lines: raw.VocalGroups.map((line) => ({
 					opposite: line.OppositeAligned,
 					start: toMs(line.StartTime),
-					lead: line.Lead?.map((group) => ({
-						words: group.Text,
-						part: group.IsPartOfWord,
-						start: toMs(group.StartTime),
-						end: toMs(group.EndTime)
-					})),
-					background: line.Background?.map((group) => ({
-						words: group.Text,
-						part: group.IsPartOfWord,
-						start: toMs(group.StartTime),
-						end: toMs(group.EndTime)
-					})),
+					lead: line.Lead?.map((lead) => lyricsGroupToLine(lead)),
+					background: line.Background?.map((background) => lyricsGroupToLine(background)),
+					all: [
+						...(line.Lead ?? []).map((group) => lyricsGroupToLine(group, 'front')),
+						...(line.Background ?? []).map((group) => lyricsGroupToLine(group, 'back'))
+					].sort((a, b) => a.start - b.start),
 					end: toMs(line.EndTime)
 				}))
 			};

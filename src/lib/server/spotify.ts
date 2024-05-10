@@ -1,4 +1,4 @@
-import type { Lyrics } from '$lib/types/Lyrics';
+import type { Lyrics, LyricsLineSynced } from '$lib/types/Lyrics';
 import type { RawSpotifyLyrics } from '$lib/types/Lyrics/Spotify';
 import baseHeaders from './request/headers';
 
@@ -52,15 +52,27 @@ export default async function getLyrics(trackId: string, accessToken: string): P
 		case 'LINE_SYNCED': {
 			const hasEndTimes = raw.lyrics.lines.every((line) => line.endTimeMs !== '0');
 			if (!hasEndTimes) {
+				const endTimesLines: LyricsLineSynced['lines'] = [];
+				let i = 0;
+				for (const line of raw.lyrics.lines as Omit<
+					(typeof raw.lyrics.lines)[number],
+					'endTimeMs'
+				>[]) {
+					let endTime = -1;
+					if (i < raw.lyrics.lines.length - 1) {
+						endTime = Number(raw.lyrics.lines[i + 1].startTimeMs);
+					}
+					endTimesLines.push({
+						opposite: false,
+						start: Number(line.startTimeMs),
+						text: line.words === '' ? '♪' : line.words,
+						end: endTime
+					});
+					i++;
+				}
 				return {
 					syncType: 'LINE_SYNCED',
-					lines: raw.lyrics.lines.map((line) => {
-						return {
-							opposite: false,
-							start: Number(line.startTimeMs),
-							text: line.words === '' ? '♪' : line.words
-						};
-					})
+					lines: endTimesLines
 				};
 			} else {
 				return {
