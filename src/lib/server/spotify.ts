@@ -11,11 +11,6 @@ export async function getSong(id: string, accessToken: string) {
 	}).then((res) => res.json());
 }
 
-export async function getISRC(id: string, accessToken: string) {
-	const song = await getSong(id, accessToken);
-	return song.external_ids.isrc;
-}
-
 export async function getRawLyrics(
 	trackId: string,
 	accessToken: string
