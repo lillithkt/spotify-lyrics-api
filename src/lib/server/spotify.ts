@@ -90,19 +90,3 @@ export default async function getLyrics(trackId: string, accessToken: string): P
 		}
 	}
 }
-
-export async function isrcToSpotify(isrc: string, accessToken: string) {
-	const res = await fetch('https://api.spotify.com/v1/search?type=track&q=isrc:' + isrc, {
-		headers: {
-			Authorization: 'Bearer ' + accessToken
-		}
-	});
-	if (!res.ok) {
-		return null;
-	}
-	const data = await res.json();
-	if (data?.tracks?.items?.length) {
-		return data.tracks.items[0].id;
-	}
-	return null;
-}

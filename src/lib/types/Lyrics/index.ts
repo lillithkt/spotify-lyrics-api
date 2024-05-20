@@ -29,8 +29,11 @@ export type LyricsSyllableSynced = {
 		opposite: boolean;
 		start: number;
 		lead?: SyllableLyricGroup[];
-		background?: SyllableLyricGroup[];
-		all: (SyllableLyricGroup & { type: 'front' | 'back' })[];
+		background?: {
+			groups: SyllableLyricGroup[];
+			start: number;
+			end: number;
+		}[];
 		end: number;
 	}[];
 };

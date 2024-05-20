@@ -1,9 +1,8 @@
 import { SongLinkRegex } from '$lib/regex';
 import { trackNotFound } from '$lib/server/responses';
-import { getISRC } from '$lib/server/spotify';
 import { redirect, type RequestHandler } from '@sveltejs/kit';
 
-export const GET: RequestHandler = async ({ params, locals, url }) => {
+export const GET: RequestHandler = async ({ params, url }) => {
 	if (!params.songLink) {
 		return trackNotFound('not given');
 	}
@@ -14,11 +13,9 @@ export const GET: RequestHandler = async ({ params, locals, url }) => {
 	}
 	const trackId = match[1];
 
-	const isrc = await getISRC(trackId, locals.accessToken || '');
-
 	const lastParam = url.href.split('/').pop();
 	if (['spotify', 'beautiful'].includes(lastParam || '')) {
-		return redirect(301, `/lyrics/${isrc}/${lastParam}`);
+		return redirect(301, `/lyrics/${trackId}/${lastParam}`);
 	}
-	return redirect(301, `/lyrics/${isrc}`);
+	return redirect(301, `/lyrics/${trackId}`);
 };

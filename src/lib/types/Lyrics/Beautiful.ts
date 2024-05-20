@@ -9,7 +9,7 @@ export type BeautifulLyricsLine = {
 	StartTime: number;
 	EndTime: number;
 	Type: 'Line';
-	VocalGroups: {
+	Content: {
 		Type: 'Vocal';
 		OppositeAligned: boolean;
 		Text: string;
@@ -29,13 +29,19 @@ export type BeautifulLyricsSyllable = {
 	StartTime: number;
 	EndTime: number;
 	Type: 'Syllable';
-	VocalGroups: {
+	Content: {
 		Type: 'Vocal';
 		OppositeAligned: boolean;
-		StartTime: number;
-		EndTime: number;
-		Lead?: BeautifulLyricsSyllableGroup[];
-		Background?: BeautifulLyricsSyllableGroup[];
+		Lead?: {
+			Syllables: BeautifulLyricsSyllableGroup[];
+			StartTime: number;
+			EndTime: number;
+		};
+		Background?: {
+			Syllables: BeautifulLyricsSyllableGroup[];
+			StartTime: number;
+			EndTime: number;
+		}[]; // Yes, this is an array. Yes, lead is not an array. Why? who knows
 	}[];
 };
 

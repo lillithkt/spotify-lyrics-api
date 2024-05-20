@@ -1,8 +1,15 @@
 import type { Lyrics, SyllableLyricGroup } from '$lib/types/Lyrics';
 import type { BeautifulLyrics, BeautifulLyricsSyllableGroup } from '$lib/types/Lyrics/Beautiful';
 
-export async function getRawBeautifulLyrics(isrc: string): Promise<BeautifulLyrics> {
-	const res = await fetch(`https://beautiful-lyrics.socalifornian.live/lyrics/${isrc}`);
+export async function getRawBeautifulLyrics(
+	trackId: string,
+	accessToken: string
+): Promise<BeautifulLyrics> {
+	const res = await fetch(`https://beautiful-lyrics.socalifornian.live/lyrics/${trackId}`, {
+		headers: {
+			Authorization: 'Bearer ' + accessToken
+		}
+	});
 	return res.json();
 }
 
@@ -30,8 +37,11 @@ function lyricsGroupToLine(
 	};
 }
 
-export default async function getBeautifulLyrics(isrc: string): Promise<Lyrics> {
-	const raw = await getRawBeautifulLyrics(isrc);
+export default async function getBeautifulLyrics(
+	trackId: string,
+	accessToken: string
+): Promise<Lyrics> {
+	const raw = await getRawBeautifulLyrics(trackId, accessToken);
 	switch (raw.Type) {
 		case 'Static':
 			return {
@@ -45,7 +55,7 @@ export default async function getBeautifulLyrics(isrc: string): Promise<Lyrics> 
 		case 'Line': {
 			return {
 				syncType: 'LINE_SYNCED',
-				lines: raw.VocalGroups.map((line) => ({
+				lines: raw.Content.map((line) => ({
 					opposite: line.OppositeAligned,
 					start: toMs(line.StartTime),
 					text: line.Text,
@@ -57,17 +67,34 @@ export default async function getBeautifulLyrics(isrc: string): Promise<Lyrics> 
 		case 'Syllable': {
 			return {
 				syncType: 'SYLLABLE_SYNCED',
-				lines: raw.VocalGroups.map((line) => ({
-					opposite: line.OppositeAligned,
-					start: toMs(line.StartTime),
-					lead: line.Lead?.map((lead) => lyricsGroupToLine(lead)),
-					background: line.Background?.map((background) => lyricsGroupToLine(background)),
-					all: [
-						...(line.Lead ?? []).map((group) => lyricsGroupToLine(group, 'front')),
-						...(line.Background ?? []).map((group) => lyricsGroupToLine(group, 'back'))
-					].sort((a, b) => a.start - b.start),
-					end: toMs(line.EndTime)
-				}))
+				lines: raw.Content.map((line) => {
+					let posStart = 0;
+					let posEnd = 0;
+					let start = 0;
+					let end = 0;
+					if (line.Background?.length) {
+						posStart = toMs(line.Background[0].StartTime);
+						posEnd = toMs(line.Background[line.Background.length - 1].EndTime);
+					}
+					if (line.Lead) {
+						start = Math.min(toMs(line.Lead.StartTime), posStart);
+						end = Math.max(toMs(line.Lead.EndTime), posEnd);
+					} else {
+						start = posStart;
+						end = posEnd;
+					}
+					return {
+						opposite: line.OppositeAligned,
+						start,
+						lead: line.Lead?.Syllables.map((lead) => lyricsGroupToLine(lead)),
+						background: line.Background?.map((background) => ({
+							groups: background.Syllables.map((a) => lyricsGroupToLine(a)),
+							start: toMs(background.StartTime),
+							end: toMs(background.EndTime)
+						})),
+						end
+					};
+				})
 			};
 		}
 	}
