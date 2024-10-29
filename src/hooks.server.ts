@@ -17,6 +17,9 @@ async function getAccessToken() {
 		}).then((res) => res.json());
 		if (data.accessToken) {
 			AuthData = data;
+		} else {
+			console.error('Failed to get access token');
+			console.error(data);
 		}
 	} catch (e) {
 		console.error(e);

@@ -1,0 +1,39 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$ref": "#/definitions/LyricsLineSynced",
+	"definitions": {
+		"LyricsLineSynced": {
+			"type": "object",
+			"properties": {
+				"syncType": {
+					"type": "string",
+					"const": "LINE_SYNCED"
+				},
+				"lines": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"opposite": {
+								"type": "boolean"
+							},
+							"start": {
+								"type": "number"
+							},
+							"text": {
+								"type": "string"
+							},
+							"end": {
+								"type": "number"
+							}
+						},
+						"required": ["opposite", "start", "text", "end"],
+						"additionalProperties": false
+					}
+				}
+			},
+			"required": ["syncType", "lines"],
+			"additionalProperties": false
+		}
+	}
+}

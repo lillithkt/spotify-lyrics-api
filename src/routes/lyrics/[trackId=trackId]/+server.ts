@@ -1,24 +1,16 @@
-import getBeautifulLyrics, { getRawBeautifulLyrics } from '$lib/server/beautiful';
-import getLyrics, { getRawLyrics } from '$lib/server/spotify';
+import getAnyLyrics from '$lib/server/any';
 import { error, json, type RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ params, locals, url }) => {
 	const raw = url.searchParams.has('rawLyrics');
+	console.log('a');
+	if (!locals.accessToken) {
+		console.log(locals);
+		return error(401, 'No access token');
+	}
 	try {
-		if (raw) {
-			return json(await getRawBeautifulLyrics(params.trackId as string, locals.accessToken!));
-		} else {
-			return json(await getBeautifulLyrics(params.trackId as string, locals.accessToken!));
-		}
+		return json(await getAnyLyrics(params.trackId as string, locals.accessToken!, raw));
 	} catch (e) {
-		try {
-			if (raw) {
-				return json(await getRawLyrics(params.trackId as string, locals.accessToken as string));
-			} else {
-				return json(await getLyrics(params.trackId as string, locals.accessToken as string));
-			}
-		} catch (e) {
-			return error(500, 'Failed to get lyrics');
-		}
+		return error(500, 'Failed to get lyrics');
 	}
 };

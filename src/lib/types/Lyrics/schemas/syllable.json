@@ -1,0 +1,83 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$ref": "#/definitions/LyricsSyllableSynced",
+	"definitions": {
+		"LyricsSyllableSynced": {
+			"type": "object",
+			"properties": {
+				"syncType": {
+					"type": "string",
+					"const": "SYLLABLE_SYNCED"
+				},
+				"lines": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"opposite": {
+								"type": "boolean"
+							},
+							"start": {
+								"type": "number"
+							},
+							"lead": {
+								"type": "array",
+								"items": {
+									"$ref": "#/definitions/SyllableLyricGroup"
+								}
+							},
+							"background": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"groups": {
+											"type": "array",
+											"items": {
+												"$ref": "#/definitions/SyllableLyricGroup"
+											}
+										},
+										"start": {
+											"type": "number"
+										},
+										"end": {
+											"type": "number"
+										}
+									},
+									"required": ["groups", "start", "end"],
+									"additionalProperties": false
+								}
+							},
+							"end": {
+								"type": "number"
+							}
+						},
+						"required": ["opposite", "start", "end"],
+						"additionalProperties": false
+					}
+				}
+			},
+			"required": ["syncType", "lines"],
+			"additionalProperties": false
+		},
+		"SyllableLyricGroup": {
+			"type": "object",
+			"properties": {
+				"words": {
+					"type": "string"
+				},
+				"part": {
+					"type": "boolean"
+				},
+				"start": {
+					"type": "number"
+				},
+				"end": {
+					"type": "number"
+				}
+			},
+			"required": ["words", "part", "start", "end"],
+			"additionalProperties": false
+		}
+	}
+}
