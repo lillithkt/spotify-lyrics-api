@@ -9,7 +9,7 @@ const dc = SPOTIFY_COOKIE.startsWith('sp_dc=') ? SPOTIFY_COOKIE : `sp_dc=${SPOTI
 
 async function getAccessToken() {
 	try {
-		const data: AccessTokenAPIData = await fetch('https://open.spotify.com/get_access_token', {
+		const data: AccessTokenAPIData = await fetch('https://open.spotify.com/get_access_token?reason=transport&productType=web-player', {
 			headers: {
 				...baseHeaders,
 				Cookie: dc

@@ -3,9 +3,7 @@ import { error, json, type RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ params, locals, url }) => {
 	const raw = url.searchParams.has('rawLyrics');
-	console.log('a');
 	if (!locals.accessToken) {
-		console.log(locals);
 		return error(401, 'No access token');
 	}
 	try {
