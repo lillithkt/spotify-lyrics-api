@@ -5,7 +5,6 @@ declare global {
 		// interface Error {}
 		interface Locals {
 			accessToken: string | undefined;
-			accessTokenExpiration: number | undefined;
 		}
 		// interface PageData {}
 		// interface PageState {}

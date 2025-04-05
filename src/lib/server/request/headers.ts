@@ -1,12 +1,20 @@
 const baseHeaders = {
-	'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/114.0',
-	Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-	'Accept-Language': 'en-US,en;q=0.5',
-	'Alt-Used': 'open.spotify.com',
-	'Upgrade-Insecure-Requests': '1',
-	'Sec-Fetch-Dest': 'document',
-	'Sec-Fetch-Mode': 'navigate',
-	'Sec-Fetch-Site': 'cross-site'
+	'User-Agent':
+		'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
+	accept: 'application/json',
+	'accept-language': 'en-US,en;q=0.9',
+	'cache-control': 'no-cache',
+	'content-type': 'application/json',
+	pragma: 'no-cache',
+	priority: 'u=1, i',
+	'sec-ch-ua': '"Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"',
+	'sec-ch-ua-mobile': '?0',
+	'sec-ch-ua-platform': '"Windows"',
+	'sec-fetch-dest': 'empty',
+	'sec-fetch-mode': 'cors',
+	'sec-fetch-site': 'same-site',
+	Referer: 'https://open.spotify.com/',
+	'Referrer-Policy': 'strict-origin-when-cross-origin'
 };
 
 export default baseHeaders;
